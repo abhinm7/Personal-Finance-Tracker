@@ -1,28 +1,37 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function Chart() {
   const [chartData, setChartData] = useState([]);
 
-  // Fetch transactions from the API
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await fetch('/api/transactions'); // Adjust the endpoint URL if needed
+        const response = await fetch('/api/transactions');
         const data = await response.json();
         
         if (data.transactions) {
-          // Transform the data for the chart
-          const transformedData = data.transactions.map((transaction: any) => ({
-            name: new Date(transaction.date).toLocaleDateString('en-US', {
-              month: 'short',
-              day: '2-digit',
-            }), // Format as "Jan 05"
-            amount: transaction.amount, // Use amount for the line
+          // Group transactions by month and calculate total amount per month
+          const monthlyData = data.transactions.reduce((acc: any, transaction: any) => {
+            const date = new Date(transaction.date);
+            const monthYear = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }); // e.g., "Jan 2024"
+            
+            if (!acc[monthYear]) {
+              acc[monthYear] = 0;
+            }
+            acc[monthYear] += transaction.amount;
+            
+            return acc;
+          }, {});
+
+          // Convert to array format for Recharts
+          const transformedData = Object.keys(monthlyData).map(month => ({
+            name: month,
+            amount: monthlyData[month],
           }));
-          
+
           setChartData(transformedData);
         }
       } catch (error) {
@@ -31,18 +40,23 @@ export default function Chart() {
     };
 
     fetchTransactions();
-  }, []); // Empty dependency array to run once on mount
+  }, []);
 
   return (
     <ResponsiveContainer width="60%" height={400}>
-      <LineChart data={chartData}>
+      <BarChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
         <YAxis />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="amount" stroke="#8884d8" name="Transaction Amount" />
-      </LineChart>
+        <Bar 
+          dataKey="amount" 
+          fill="#8884d8" 
+          name="Monthly Transactions" 
+          barSize={30} // Adjust bar width
+        />
+      </BarChart>
     </ResponsiveContainer>
   );
 }

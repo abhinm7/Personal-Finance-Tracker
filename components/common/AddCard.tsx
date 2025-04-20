@@ -12,6 +12,7 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import toast from "react-hot-toast";
 
 interface FormData {
     title: string;
@@ -39,7 +40,7 @@ const AddCard = () => {
         
         // Basic validation
         if (!formData.title || !formData.amount || !formData.date) {
-            alert("All fields are required!");
+            toast.error("All fields required.")
             return;
         }
         
@@ -54,7 +55,7 @@ const AddCard = () => {
             if (response.ok) {
                 // Clear form on success
                 setFormData({ title: "", amount: "", date: "" });
-                alert("Transaction added successfully!");
+                toast.success("Transaction added successfully!");
             } else {
                 throw new Error("Failed to add transaction");
             }
