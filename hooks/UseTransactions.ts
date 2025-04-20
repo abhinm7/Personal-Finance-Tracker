@@ -21,7 +21,13 @@ export const useTransactions = () => {
   const fetchTransactions = async () => {
     try {
       const response = await fetch('/api/transactions');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
       const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
       if (data.transactions) {
         setTransactions(
           data.transactions.map((t: any) => ({
@@ -31,16 +37,19 @@ export const useTransactions = () => {
               month: '2-digit',
               day: '2-digit',
             }),
-            title: t.title, // Changed from category to title for consistency
-            amount: t.amount, // Changed to number to match Transaction interface
+            title: t.title,
+            amount: t.amount,
             rawAmount: t.amount,
             rawDate: t.date,
             category: t.title,
           }))
         );
+      } else {
+        console.warn('No transactions found in response');
       }
     } catch (error) {
       console.error('Error fetching transactions:', error);
+      toast.error(`Failed to fetch transactions: ${error.message}`);
     }
   };
 
