@@ -1,6 +1,14 @@
 'use client';
 
-import { Transaction } from './useTransactions';
+interface Transaction {
+  _id: string;
+  date: string;
+  title: string;
+  amount: number;
+  rawAmount: number;
+  rawDate: string;
+  category: string;
+}
 
 interface TransactionModalProps {
   isOpen: boolean;
