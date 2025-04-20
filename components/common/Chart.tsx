@@ -41,21 +41,21 @@ export default function Chart() {
       try {
         const response = await fetch('/api/transactions');
         const data = await response.json();
-        
+
         if (data.transactions) {
           // Group transactions by month and calculate total amount
           const monthlyData = data.transactions.reduce((acc: Record<string, number>, transaction: Transaction) => {
             const date = new Date(transaction.date);
-            const monthYear = date.toLocaleDateString('en-US', { 
-              month: 'short', 
-              year: 'numeric' 
+            const monthYear = date.toLocaleDateString('en-US', {
+              month: 'short',
+              year: 'numeric',
             });
-            
+
             if (!acc[monthYear]) {
               acc[monthYear] = 0;
             }
             acc[monthYear] += transaction.amount;
-            
+
             return acc;
           }, {});
 
@@ -64,10 +64,8 @@ export default function Chart() {
             .map(month => ({
               name: month,
               amount: monthlyData[month],
-              sortKey: new Date(month).getTime()
             }))
-            .sort((a, b) => a.sortKey - b.sortKey)
-            .map(({ sortKey, ...rest }) => rest);
+            .sort((a, b) => new Date(a.name).getTime() - new Date(b.name).getTime());
 
           setChartData(transformedData);
         }
@@ -85,15 +83,15 @@ export default function Chart() {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
         <YAxis />
-        <Tooltip 
+        <Tooltip
           formatter={(value: number) => `$${value.toFixed(2)}`}
           labelFormatter={(label) => `Month: ${label}`}
         />
         <Legend />
-        <Bar 
-          dataKey="amount" 
-          fill="#8884d8" 
-          name="Monthly Amount" 
+        <Bar
+          dataKey="amount"
+          fill="#8884d8"
+          name="Monthly Amount"
           barSize={35}
           radius={[5, 5, 0, 0]}
         />

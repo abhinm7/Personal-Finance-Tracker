@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useTransactions } from '@/hooks/UseTransaction';
+import { useTransactions } from '@/hooks/UseTransactions'; 
 import { TransactionModal } from './TransactionModal';
 import { TransactionRow } from './TransactionRow';
 
@@ -25,7 +25,11 @@ export const TransactionTable = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setEditTransaction((prev: any) => ({ ...prev, [name]: value }));
+    setEditTransaction((prev) => {
+      if (!prev) return prev; // Handle null case
+      const updatedValue = name === 'amount' ? parseFloat(value) || 0 : value;
+      return { ...prev, [name]: updatedValue };
+    });
   };
 
   return (

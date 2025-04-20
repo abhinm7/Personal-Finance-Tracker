@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
-interface Transaction {
+export interface Transaction {
   _id: string;
   date: string;
   title: string;
@@ -31,10 +31,11 @@ export const useTransactions = () => {
               month: '2-digit',
               day: '2-digit',
             }),
-            category: t.title,
-            amount: `₹${t.amount.toFixed(2)}`,
+            title: t.title, // Changed from category to title for consistency
+            amount: t.amount, // Changed to number to match Transaction interface
             rawAmount: t.amount,
             rawDate: t.date,
+            category: t.title,
           }))
         );
       }
@@ -53,6 +54,9 @@ export const useTransactions = () => {
       title: transaction.category,
       amount: transaction.rawAmount,
       date: new Date(transaction.rawDate).toISOString().split('T')[0],
+      rawAmount: transaction.rawAmount,
+      rawDate: transaction.rawDate,
+      category: transaction.category,
     });
     setIsModalOpen(true);
   };
@@ -83,7 +87,7 @@ export const useTransactions = () => {
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editTransaction) return;
-    
+
     const updateToast = toast.loading('Updating transaction...');
     try {
       const response = await fetch('/api/transactions', {
