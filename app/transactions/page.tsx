@@ -1,5 +1,5 @@
 import Chart from "@/components/common/Chart"
-import TableList from "@/components/common/TableList"
+import TableList from "@/components/transactions/TransactionTable"
 
 
 const Transactions = () => {
