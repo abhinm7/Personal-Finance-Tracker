@@ -22,9 +22,6 @@ const Navbar = () => {
           <Link href="/" className="hover:text-gray-300">
             Home
           </Link>
-          <Link href="/overview" className="hover:text-gray-300">
-            Overview
-          </Link>
           <Link href="/transactions" className="hover:text-gray-300">
             Transactions
           </Link>
@@ -59,9 +56,6 @@ const Navbar = () => {
         <div className="md:hidden bg-gray-700 text-white p-4 space-y-4">
           <Link href="/" className="block hover:text-gray-300">
             Home
-          </Link>
-          <Link href="/overview" className="block hover:text-gray-300">
-            Overview
           </Link>
           <Link href="/transactions" className="block hover:text-gray-300">
             Transactions

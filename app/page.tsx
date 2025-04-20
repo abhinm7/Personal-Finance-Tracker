@@ -1,4 +1,5 @@
 import AddCard from "@/components/common/AddCard";
+import Chart from "@/components/common/Chart";
 import TableList from "@/components/common/TableList";
 import Header from "@/components/ui/home-head";
 
@@ -8,6 +9,7 @@ export default function Home() {
       <Header />
       <AddCard/>
       <TableList/>
+      <Chart/>
     </div>
   );
 }
